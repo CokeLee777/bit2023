@@ -7,10 +7,10 @@ public class LotteryProgram {
 	private static final int totalCountOfNumbers = 5;
 	private static final int minNumber = 1;
 	private static final int maxNumber = 40;
-	
-	public static final Random random = new Random();
 	private static final long totalReward = 5000000000l;
 	private static final double[] percentOfReward = new double[] {0.5, 0.3, 0.1, 0.08, 0.02};
+	
+	public static final Random random = new Random();
 	
 	private static final List<Person> participants = new ArrayList<>();
 	private static final Map<Integer, List<Person>> lotteryRanking = new HashMap<>();
@@ -29,7 +29,8 @@ public class LotteryProgram {
 		Scanner sc = new Scanner(System.in);
 		
 		// my input
-		Set<Integer> myNumbers = new HashSet<>();
+		Lottery myLottery = new Lottery();
+		Set<Integer> myNumbers = myLottery.getNumbers();
 		while(myNumbers.size() < totalCountOfNumbers) {
 			int inputNumber = sc.nextInt();
 			if(inputNumber < minNumber || inputNumber > maxNumber || myNumbers.contains(inputNumber))
@@ -37,8 +38,9 @@ public class LotteryProgram {
 			
 			myNumbers.add(inputNumber);
 		}
-		
-		Person me = addParticipant(myNumbers);
+		Person me = new Person();
+		me.buyLottery(myLottery);
+		participants.add(me);
 		
 		// set dummy data
 		setDummyData();
@@ -77,7 +79,8 @@ public class LotteryProgram {
 	
 	private void setDummyData() {
 		for(int i = 0; i < 999; i++) {
-			Set<Integer> numbers = new HashSet<>(); 
+			Lottery lottery = new Lottery();
+			Set<Integer> numbers = lottery.getNumbers(); 
 					
 			int pickCount = 0;
 			while(pickCount++ < totalCountOfNumbers) {
@@ -89,20 +92,10 @@ public class LotteryProgram {
 				numbers.add(randomNumber);
 			}
 			
-			addParticipant(numbers);
+			Person person = new Person();
+			person.buyLottery(lottery);
+			participants.add(person);
 		}
-	}
-	
-	private Person addParticipant(Set<Integer> numbers) {
-		Lottery lottery = new Lottery();
-		lottery.addNumbers(numbers);
-		
-		Person person = new Person();
-		person.buyLottery(lottery);
-		
-		participants.add(person);
-		
-		return person;
 	}
 
 	public static void main(String[] args) {
