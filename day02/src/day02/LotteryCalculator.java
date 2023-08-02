@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static day02.LotteryProperties.*;
+
 public class LotteryCalculator {
-	
-	private static final int totalCountOfNumbers = 5;
 	
 	private final List<Person> participants;
 	private final Map<Integer, List<Person>> lotteryRankingStore;
@@ -30,7 +30,7 @@ public class LotteryCalculator {
 			}
 			
 			// add ranking store
-			switch(sameNumberCount) {
+			switch (sameNumberCount) {
 				case 5:
 					putPersonInLotteryRankingStore(1, person);
 					break;
@@ -46,8 +46,7 @@ public class LotteryCalculator {
 				case 1:
 					putPersonInLotteryRankingStore(5, person);
 					break;
-				default:
-					break;
+				default: break;
 			}
 		}
 	}

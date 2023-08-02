@@ -2,13 +2,9 @@ package day02;
 
 import java.util.*;
 
+import static day02.LotteryProperties.*;
+
 public class LotteryProgram {
-	
-	private static final int totalCountOfNumbers = 5;
-	private static final int minNumber = 1;
-	private static final int maxNumber = 40;
-	private static final long totalReward = 5000000000l;
-	private static final double[] percentOfReward = new double[] {0.5, 0.3, 0.1, 0.08, 0.02};
 	
 	public static final Random random = new Random();
 	
@@ -30,13 +26,33 @@ public class LotteryProgram {
 		// my input
 		Lottery myLottery = new Lottery();
 		Set<Integer> myNumbers = myLottery.getNumbers();
-		while(myNumbers.size() < totalCountOfNumbers) {
-			int inputNumber = sc.nextInt();
-			if(inputNumber < minNumber || inputNumber > maxNumber || myNumbers.contains(inputNumber))
-				continue;
-			
-			myNumbers.add(inputNumber);
+		try {
+			while(myNumbers.size() < totalCountOfNumbers) {
+				int inputNumber = sc.nextInt();
+				if (inputNumber < minNumber || inputNumber > maxNumber) {
+					System.out.println("올바른 범위의 숫자를 입력해주세요");
+					continue;
+				}
+				if(myNumbers.contains(inputNumber)) {
+					System.out.println("중복된 숫자입니다 처음부터 다시 입력해주세요");
+					continue;
+				}
+				myNumbers.add(inputNumber);
+			}
+		} catch(InputMismatchException ex) {
+			System.out.println("숫자로 입력해주세요");
+			operator();
+			return;
+		} catch(NoSuchElementException ex) {
+			System.out.println("숫자를 입력해주세요");
+			operator();
+			return;
+		} catch(Exception ex){
+			System.out.println("예상하지 못한 에러가 발생했습니다");
+			return;
 		}
+		sc.close();
+
 		Person me = new Person();
 		me.buyLottery(myLottery);
 		participants.add(me);
@@ -54,8 +70,6 @@ public class LotteryProgram {
 		// print total result and my result
 		printTotalResult();
 		printSpecificResult(me);
-		
-		sc.close();
 	}
 	
 	public void printTotalResult() {
@@ -90,14 +104,14 @@ public class LotteryProgram {
 		for(int i = 0; i < size; i++) {
 			Lottery lottery = new Lottery();
 			Set<Integer> numbers = lottery.getNumbers();
-					
+
 			int pickCount = 0;
 			while(pickCount++ < totalCountOfNumbers) {
 				int randomNumber = LotteryProgram.random.nextInt(maxNumber + 1);
 				// check if is not possible number
 				if(randomNumber == 0 || numbers.contains(randomNumber))
 					continue;
-				
+
 				numbers.add(randomNumber);
 			}
 			
