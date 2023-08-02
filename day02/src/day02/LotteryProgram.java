@@ -13,7 +13,7 @@ public class LotteryProgram {
 	public static final Random random = new Random();
 	
 	private static final List<Person> participants = new ArrayList<>();
-	private static final Map<Integer, List<Person>> lotteryRanking = new HashMap<>();
+	private static final Map<Integer, List<Person>> lotteryRankingStore = new HashMap<>();
 	
 	private final Office office;
 	private final LotteryCalculator calculator;
@@ -25,7 +25,6 @@ public class LotteryProgram {
 	
 	public void operator() {
 		System.out.println("로또번호 5개를 입력해주세요(1 ~ 40사이의 숫자)");
-		
 		Scanner sc = new Scanner(System.in);
 		
 		// my input
@@ -43,44 +42,54 @@ public class LotteryProgram {
 		participants.add(me);
 		
 		// set dummy data
-		setDummyData();
+		setDummyData(999);
 		
-		// pick lottery numbers
+		// pick winner lottery numbers in office
 		office.pickWinNumbers();
 		
 		// calc ranking
-		calculator.calcRanking(office.getWinNumbers());
+		Set<Integer> winNumbers = office.getWinNumbers();
+		calculator.calcRanking(winNumbers);
 		
-		// print result
-		printResult(lotteryRanking, me);
+		// print total result and my result
+		printTotalResult();
+		printSpecificResult(me);
 		
 		sc.close();
 	}
 	
-	public void printResult(Map<Integer, List<Person>> lotteryRanking, Person me) {
-		int myrank = -1;
-		int duplicateNumberOfPeople = 0;
+	public void printTotalResult() {
 		for(int rank = 1; rank <= 5; rank++) {
-			List<Person> people = lotteryRanking.getOrDefault(rank, new ArrayList<>());
-			if(people.contains(me)) {
-				myrank = rank;
-				duplicateNumberOfPeople = people.size();
-				me.setReward(calculator.calcReward(totalReward, percentOfReward[myrank - 1], duplicateNumberOfPeople));
-			}
+			List<Person> people = lotteryRankingStore.getOrDefault(rank, new ArrayList<>());
 			System.out.println(rank + "등: " + people.size() + "명");
-		}
-		
-		if(myrank == -1) {
-			System.out.println("꽝");
-		} else {
-			System.out.println("내 등수: " + myrank + " 상금: " + me.getReward() + "원");
 		}
 	}
 	
-	private void setDummyData() {
-		for(int i = 0; i < 999; i++) {
+	public void printSpecificResult(Person person) {
+		int myRank = -1;
+		int numberOfSameRankingPeople = 0;
+		for(int rank = 1; rank <= 5; rank++) {
+			List<Person> people = lotteryRankingStore.getOrDefault(rank, new ArrayList<>());
+			if(people.contains(person)) {
+				myRank = rank;
+				numberOfSameRankingPeople = people.size();
+				long myReward = calculator.calcReward(totalReward, percentOfReward[myRank - 1], numberOfSameRankingPeople);
+				person.setReward(myReward);
+				break;
+			}
+		}
+		
+		if(myRank == -1) {
+			System.out.println("꽝");
+		} else {
+			System.out.println("내 등수: " + myRank + "등 상금: " + person.getReward() + "원");
+		}
+	}
+	
+	private void setDummyData(int size) {
+		for(int i = 0; i < size; i++) {
 			Lottery lottery = new Lottery();
-			Set<Integer> numbers = lottery.getNumbers(); 
+			Set<Integer> numbers = lottery.getNumbers();
 					
 			int pickCount = 0;
 			while(pickCount++ < totalCountOfNumbers) {
@@ -100,7 +109,7 @@ public class LotteryProgram {
 
 	public static void main(String[] args) {
 		Office office = new Office();
-		LotteryCalculator calculator = new LotteryCalculator(participants, lotteryRanking);
+		LotteryCalculator calculator = new LotteryCalculator(participants, lotteryRankingStore);
 		LotteryProgram lotteryProgram = new LotteryProgram(office, calculator);
 		lotteryProgram.operator();
 	}
