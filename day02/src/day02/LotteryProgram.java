@@ -1,6 +1,7 @@
 package day02;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static day02.LotteryProperties.*;
 
@@ -103,17 +104,11 @@ public class LotteryProgram {
 	private void setDummyData(int size) {
 		for(int i = 0; i < size; i++) {
 			Lottery lottery = new Lottery();
-			Set<Integer> numbers = lottery.getNumbers();
-
-			int pickCount = 0;
-			while(pickCount++ < totalCountOfNumbers) {
-				int randomNumber = LotteryProgram.random.nextInt(maxNumber + 1);
-				// check if is not possible number
-				if(randomNumber == 0 || numbers.contains(randomNumber))
-					continue;
-
-				numbers.add(randomNumber);
-			}
+			lottery.getNumbers().addAll(LotteryProgram.random.ints(1, 41)
+				.distinct()
+				.limit(5)
+				.boxed()
+				.collect(Collectors.toUnmodifiableSet()));
 			
 			Person person = new Person();
 			person.buyLottery(lottery);

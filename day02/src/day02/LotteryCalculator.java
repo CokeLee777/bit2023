@@ -22,7 +22,7 @@ public class LotteryCalculator {
 			Person person = participants.get(i);
 			Integer[] numbers = person.getLottery().getNumbers().toArray(new Integer[totalCountOfNumbers]);
 			
-			// calc same number 
+			// calc same number
 			int sameNumberCount = 0;
 			for(int j = 0; j < numbers.length; j++) {
 				if(winNumbers.contains(numbers[j]))
