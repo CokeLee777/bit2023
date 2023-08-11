@@ -1,5 +1,7 @@
 package web.controller;
 
+import app.cust.CustServiceImpl;
+import app.dto.Cust;
 import web.dispatcher.Navi;
 
 import javax.servlet.RequestDispatcher;
@@ -9,22 +11,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Servlet implementation class CustServlet
  */
-@WebServlet({"/main"})
-public class MainServlet extends HttpServlet {
+@WebServlet({"/app/cust"})
+public class CustServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	CustServiceImpl service = null;
+	
 
-    public MainServlet() {
+    public CustServlet() {
         super();
-        // TODO Auto-generated constructor stub
+        service = new CustServiceImpl();
     }
 
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String next = "index.jsp";
+		String next = "main.jsp";
 		String view = request.getParameter("view");
 
 		if(view != null){
@@ -32,26 +38,28 @@ public class MainServlet extends HttpServlet {
 		}
 
 		RequestDispatcher rd = 
-		request.getRequestDispatcher(next);
-		rd.forward(request, response);
+				request.getRequestDispatcher(next);
+				rd.forward(request, response);
 	}
-
-
 	private void build(HttpServletRequest request,
 			String view){
 		if(view.equals("register")){
-			request.setAttribute("center", "register");
-			request.setAttribute("navi", Navi.register);
-		}else if(view.equals("login")){
-			request.setAttribute("center", "login");
-			request.setAttribute("navi", Navi.login);
-		}else if(view.equals("custadd")){
+			
 			request.setAttribute("center", "app/cust/register");
-		}else if(view.equals("productadd")){
-			request.setAttribute("center", "product/register");
-		}else if(view.equals("chart")){
-			request.setAttribute("center", "chart/chart");
+			request.setAttribute("navi", Navi.custRegister);
+		}else if(view.equals("getall")){
+			List<Cust> list;
+			try {
+				list = service.getAll();
+				request.setAttribute("clist", list);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			request.setAttribute("center", "app/cust/getall");
+			request.setAttribute("navi", Navi.custGet);
 		}
 		
 	}
+
+
 }
