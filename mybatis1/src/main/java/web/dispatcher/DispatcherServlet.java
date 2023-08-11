@@ -30,13 +30,16 @@ public class DispatcherServlet extends HttpServlet {
 		work_log.debug(path);
 		String next = "main.jsp";
 		if(path != null) {
-			next = path;
+			next = path;		
 		}
-		RequestDispatcher rd = 
-		request.getRequestDispatcher(next);
-			rd.forward(request, response);
+		RequestDispatcher rd = request.getRequestDispatcher(next);
+		rd.forward(request, response);
 		
 	}
+	
+	
+	
+
 }
 
 

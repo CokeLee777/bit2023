@@ -40,6 +40,7 @@ public class BadRequestFilter implements Filter{
 
 		String path = uri.substring(uri.lastIndexOf("/"));
 		work_log.debug("doFilter----"+path);
+		// 사용자의 요청이 루트라면 main.bit로 리다이렉트
 		if(path.equals("/")) {
 			((HttpServletResponse)response).sendRedirect("main.bit");
 			return;

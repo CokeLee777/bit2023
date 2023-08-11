@@ -35,8 +35,8 @@ public class CustServiceImpl implements ServiceFrame<String, Cust> {
         return insertedRow;
     }
 
-    @Override
-    public int modify(Cust cust) throws Exception {
+        @Override
+        public int modify(Cust cust) throws Exception {
         int updatedRow;
         try {
             updatedRow = dao.update(cust, session);
